@@ -1,0 +1,60 @@
+chmod +x ./init_kind.sh
+./init_kind.sh
+echo 'export PATH=$PATH:/usr/local/bin' >> ~/.bashrc
+source ~/.bashrc
+kind version
+kubectl version --client
+
+EKS:
+
+remove creds and 
+vi ~/.aws/credentials (should be empty)
+
+add creds and 
+cat ~/.aws/credentials (new creds)
+
+sudo yum -y install jq gettext bash-completion
+
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+
+sudo mv -v /tmp/eksctl /usr/local/bin
+
+curl -LO https://dl.k8s.io/release/v1.29.13/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/
+alias k=kubectl
+k version --client
+
+eksctl create cluster -f eks_config.yaml
+k get nodes
+
+k create ns final
+
+k apply -k 'github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-1.32'
+
+k apply -f ./storage-account/sa.yaml
+k apply -f ./storage-account/role.yaml
+k apply -f ./storage-account/role-binding.yaml
+
+kubectl get namespaces --as=system:serviceaccount:final:clo835
+k describe clusterroles clo835-ns-admin
+
+k apply -f ./mysql-db/secrets.yaml
+k apply -f ./mysql-db/pvc.yaml
+k apply -f ./mysql-db/headless.yaml
+k apply -f ./mysql-db/deployment.yaml
+
+k apply -f ./web-app/secrets.yaml
+k apply -f ./web-app/configMap.yaml
+k apply -f ./web-app/service.yaml
+k apply -f ./web-app/deployment.yaml
+
+k get pods -n final
+
+k delete pod mysql-0 -n final
+
+kubectl rollout restart deployment application -n final
+
+k delete ns final
+
+eksctl delete cluster --name clo835 --region us-east-1
