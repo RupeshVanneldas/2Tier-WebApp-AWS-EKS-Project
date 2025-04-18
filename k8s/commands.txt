@@ -32,9 +32,9 @@ k create ns final
 
 k apply -k 'github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-1.32'
 
-k apply -f ./storage-account/sa.yaml
-k apply -f ./storage-account/role.yaml
-k apply -f ./storage-account/role-binding.yaml
+k apply -f ./service-account/sa.yaml
+k apply -f ./service-account/role.yaml
+k apply -f ./service-account/role-binding.yaml
 
 kubectl get namespaces --as=system:serviceaccount:final:clo835
 k describe clusterroles clo835-ns-admin
