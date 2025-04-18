@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Add Emp Output</title>
+    <style>
+      body {
+        background-image: url('{{ image_url }}');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+      .content {
+        text-align: center;
+        color: dodgerblue;
+        font-family: Avenir, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="content">
+      <h1>The employee {{ name }} was successfully added to the database</h1>
+      <h2>The Employee has been added to the database</h2>
+      <h2>{{ name }}</h2>
+      <a href="{{ url_for('home') }}">Back</a>
+    </div>
+  </body>
+</html>

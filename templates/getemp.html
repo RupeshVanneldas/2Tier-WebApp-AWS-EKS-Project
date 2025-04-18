@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Get Employee Information</title>
+    <style>
+      body {
+        background-image: url('{{ image_url }}');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+      .content {
+        text-align: center;
+        color: dodgerblue;
+        font-family: Avenir, sans-serif;
+      }
+      h1 {
+        color: dodgerblue;
+      }
+      button {
+        background: grey;
+        height: 45px;
+        width: 200px;
+        color: white;
+        font-style: oblique;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="content">
+      <h1>Employee Information</h1>
+      <form action="/fetchdata" autocomplete="on" method="POST">
+        <h2 style="color: grey">Enter Employee ID</h2>
+        Employee ID:<br />
+        <input
+          style="height: 25px; font-size: 14pt"
+          type="number"
+          name="emp_id"
+          autofocus
+          size="40"
+        /><br /><br />
+        <button type="submit">FETCH INFO</button><br /><br />
+      </form>
+    </div>
+  </body>
+</html>
