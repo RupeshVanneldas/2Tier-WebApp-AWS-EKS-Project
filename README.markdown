@@ -23,9 +23,6 @@
 ## 🚀 Project Overview
 > A **2-Tier Web Application** with a Flask frontend and MySQL backend, fully containerized and deployed on **Amazon EKS**. Includes auto-scaling, persistent storage, and secure secret management.  
 
-![EKS Architecture](docs/eks-architecture.png)  
-*Figure: High-level architecture diagram*  
-
 ---
 
 ## 🎯 Objectives
