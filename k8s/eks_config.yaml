@@ -3,13 +3,13 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: clo835
+  name: rv-eks-cluster
   region: "us-east-1"
   version: "1.31"
 
 availabilityZones: ["us-east-1a" ,"us-east-1b" ,"us-east-1c"]
 iam:
-  serviceRoleARN: arn:aws:iam::115287631585:role/LabRole
+  serviceRoleARN: arn:aws:iam::<AWS_ACCOUNT_ID>:role/<CUSTOM_ROLE_NAME>
 managedNodeGroups:
 - name: nodegroup
   desiredCapacity: 2
@@ -17,4 +17,4 @@ managedNodeGroups:
   ssh:
     enableSsm: true
   iam:
-    instanceRoleARN: arn:aws:iam::115287631585:role/LabRole
+    instanceRoleARN: arn:aws:iam::<AWS_ACCOUNT_ID>:role/<CUSTOM_ROLE_NAME>

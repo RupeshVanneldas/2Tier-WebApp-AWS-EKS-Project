@@ -16,10 +16,10 @@ spec:
       labels:
         app.kubernetes.io/app: mysql
     spec:
-      serviceAccountName: clo835
+      serviceAccountName: rvServiceAccount
       containers:
       - name: mysql
-        image: 115287631585.dkr.ecr.us-east-1.amazonaws.com/clo835-ass1:my_db_v1
+        image: <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_ACCOUNT_REGION>.amazonaws.com/<REPO_NAME>:my_db_v1
         ports:
         - containerPort: 3306
         env:

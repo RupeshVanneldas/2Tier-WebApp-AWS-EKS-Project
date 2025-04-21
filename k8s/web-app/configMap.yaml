@@ -4,7 +4,7 @@ metadata:
   name: app-config
   namespace: final
 data:
-  BG_IMAGE_URL: s3://rupesh-project-bucket/dogs.png
+  BG_IMAGE_URL: s3://<your-bucket-name>/<your-image-name>
   DBHOST: 172.17.0.2
   GROUP_NAME: InfraNinjas
-  GROUP_SLOGAN: ChatGPT Pro Max
+  GROUP_SLOGAN: Making the world a better place

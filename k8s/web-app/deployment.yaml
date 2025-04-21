@@ -20,7 +20,7 @@ spec:
       serviceAccountName: clo835
       containers:
       - name: application
-        image: 115287631585.dkr.ecr.us-east-1.amazonaws.com/clo835-ass1:my_app_v1
+        image: <AWS_ACCOUNT_ID>.dkr.ecr.<AWS_ACCOUNT_REGION>.amazonaws.com/<REPO_NAME>:my_app_v1
         env:
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
