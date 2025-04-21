@@ -1,5 +1,5 @@
 **⚙️ 2-Tier Web App Deployment to Amazon EKS**  
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![EKS](https://img.shields.io/badge/Amazon%20EKS-⁠v1.29.13-0099ff)](https://aws.amazon.com/eks/) [![Docker](https://img.shields.io/badge/Docker-Certified-blue.svg)](https://www.docker.com/)  
+[![License](https://img.shields.io/badge/License-GNU-blue.svg)](LICENSE) [![EKS](https://img.shields.io/badge/Amazon%20EKS-⁠v1.29.13-0099ff)](https://aws.amazon.com/eks/) [![Docker](https://img.shields.io/badge/Docker-Certified-blue.svg)](https://www.docker.com/)  
 
 ---  
 
