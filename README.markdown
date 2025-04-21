@@ -119,7 +119,6 @@ kubectl get nodes
 ---
 
 ## 🔧 CI/CD Pipeline
-![CI Pipeline](docs/github-actions.png)
 1. Push to `main` → triggers GitHub Actions
 2. Build & test Docker image
 3. Push to ECR
