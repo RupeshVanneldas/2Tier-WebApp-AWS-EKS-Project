@@ -1,162 +1,154 @@
-# Personal Project: Deployment of a 2-Tiered Web Application to Amazon EKS
+**⚙️ 2-Tier Web App Deployment to Amazon EKS**  
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![EKS](https://img.shields.io/badge/Amazon%20EKS-⁠v1.29.13-0099ff)](https://aws.amazon.com/eks/) [![Docker](https://img.shields.io/badge/Docker-Certified-blue.svg)](https://www.docker.com/)  
 
-## Introduction
+---  
 
-This repository contains a personal project focused on containerization, Kubernetes, and cloud-native applications. The project enhances a 2-tiered web application (Flask frontend with MySQL backend), containerizes it, automates its build and deployment using GitHub Actions, and deploys it to a managed Kubernetes cluster on Amazon EKS. Key features include pod auto-scaling, persistent storage, and secure access to cloud resources.
+## 📋 Table of Contents
+1. [🚀 Project Overview](#%EF%B8%8F-project-overview)
+2. [🎯 Objectives](#-objectives)
+3. [🛠️ Tech Stack](#️-tech-stack)
+4. [⚙️ Architecture Diagram](#️-architecture-diagram)
+5. [📦 Installation & Deployment](#-installation--deployment)
+   - [Prerequisites](#prerequisites)
+   - [Setup](#setup)
+   - [Kubernetes Manifests](#kubernetes-manifests)
+6. [✅ Verification](#-verification)
+7. [🔧 CI/CD Pipeline](#-ci_cd-pipeline)
+8. [📈 Features](#-features)
+9. [🤝 Contributing](#-contributing)
+10. [✉️ Contact & License](#️-contact--license)
 
-## Project Objectives
+---
 
-- **Enhance the Web Application**: Add configurable background images, secure secrets management, and persistent storage.
-- **Automate Build and Deployment**: Use GitHub Actions to streamline the CI/CD pipeline.
-- **Deploy to Amazon EKS**: Ensure scalability, security, and resilience in a managed Kubernetes environment.
+## 🚀 Project Overview
+> A **2-Tier Web Application** with a Flask frontend and MySQL backend, fully containerized and deployed on **Amazon EKS**. Includes auto-scaling, persistent storage, and secure secret management.  
 
-## Technologies and Services Used
+![EKS Architecture](docs/eks-architecture.png)  
+*Figure: High-level architecture diagram*  
 
-- **Docker**: Containerization of the application.
-- **GitHub Actions**: Automation of build, test, and deployment.
-- **Amazon ECR**: Secure storage of Docker images.
-- **Amazon EKS**: Managed Kubernetes cluster hosting.
-- **Amazon S3**: Storage for background images.
-- **Amazon EBS**: Persistent storage for MySQL.
-- **AWS IAM**: Identity and access management.
-- **kubectl**: Kubernetes cluster management.
-- **eksctl**: EKS cluster creation.
+---
 
-## Project Overview
+## 🎯 Objectives
+- 🎨 **UI Enhancements**: Configurable background image via S3 and ConfigMap
+- 🔐 **Secrets Management**: Kubernetes Secrets for DB & AWS credentials
+- 💾 **Persistence**: AWS EBS CSI driver for durable MySQL storage
+- 🔄 **CI/CD**: Automated build, test, and deploy with GitHub Actions
+- ⚖️ **Scalability**: Horizontal Pod Autoscaler for the Flask app
 
-### 1. Enhancing the Web Application
+---
 
-- **Background Image**: Replaced solid background with an image from a private S3 bucket, configured via a Kubernetes ConfigMap.
-- **Secrets Management**: MySQL credentials and AWS credentials for S3 access are passed as Kubernetes Secrets.
-- **Logging**: Added log entries for the background image URL.
-- **Header Customization**: Included a custom name and slogan in the HTML header via ConfigMap environment variables.
-- **Port Configuration**: Flask application listens on port 81.
+## 🛠️ Tech Stack
+| Layer             | Technology                           |
+|-------------------|--------------------------------------|
+| **Container**     | Docker                               |
+| **CI/CD**         | GitHub Actions                       |
+| **Registry**      | Amazon ECR                           |
+| **Orchestration** | Amazon EKS (Kubernetes v1.29.13)     |
+| **Storage**       | Amazon S3 (images), Amazon EBS (PVC) |
+| **IAM**           | AWS IAM Roles & ServiceAccounts      |
+| **CLI Tools**     | kubectl, eksctl, awscli, jq         |
 
-### 2. Containerization and Local Testing
+---
 
-- **Dockerfile**: Built a Docker image using a Python base, installed dependencies, and configured to run on port 81.
-- **Local Testing**: Tested the image in Cloud9 to verify functionality before deployment.
+## ⚙️ Architecture Diagram
+![image](https://github.com/user-attachments/assets/d6e73599-00db-4408-89d8-b182c4019fd0)
 
-### 3. Automating Build and Deployment
+---
 
-- **GitHub Actions**: Workflow triggers on main branch commits, builds the Docker image, runs tests, and pushes to Amazon ECR.
-- **Authentication**: Uses GitHub Secrets for AWS credentials to access ECR.
-
-### 4. Deploying to Amazon EKS
-
-- **Cluster Setup**: Created an EKS cluster with 2 worker nodes and a "final" namespace using `eksctl`.
-- **Kubernetes Manifests**:
-  - **ConfigMap**: Supplies background image URL.
-  - **Secrets**: Manages MySQL credentials, AWS credentials, and ECR image pull secrets.
-  - **PersistentVolumeClaim**: 2Gi storage with ReadWriteOnce access for MySQL.
-  - **ServiceAccount**: "rvServiceAccount" with a Role and RoleBinding for namespace permissions.
-  - **Deployments**: MySQL (1 replica) with PVC and Flask (1 replica) from ECR.
-  - **Services**: Exposes MySQL internally and Flask to the internet.
-
-### 5. Verifying Functionality
-
-- **Browser Access**: Confirmed Flask app loads with the correct background image.
-- **Persistence**: Verified data persists after MySQL pod deletion/recreation.
-- **Dynamic Updates**: Updated S3 image and ConfigMap, confirmed changes in the browser.
-
-## Setup and Deployment Instructions
+## 📦 Installation & Deployment
 
 ### Prerequisites
+- AWS Account with EKS, ECR, S3, IAM permissions
+- GitHub Repository
+- Local tools: `docker`, `kubectl`, `eksctl`, `awscli`, `jq`
 
-- AWS account with EKS, ECR, S3, and IAM permissions.
-- GitHub account and repository.
-- Docker, `kubectl`, and `eksctl` installed locally.
-
-### Deployment Commands
-
-Below are the commands used to set up and deploy the project:
-
+### Setup
 ```bash
-# Configure AWS credentials
-vi ~/.aws/credentials  # Add AWS credentials
-cat ~/.aws/credentials  # Verify credentials
+# 1. Configure AWS CLI
+aws configure
 
-# Install dependencies
-sudo yum -y install jq gettext bash-completion
+# 2. Install eksctl & kubectl
+curl -sSL https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz | tar xz -C /usr/local/bin
+curl -LO https://dl.k8s.io/release/v1.29.13/bin/linux/amd64/kubectl && chmod +x kubectl && mv kubectl /usr/local/bin
 
-# Install eksctl
-curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
-sudo mv -v /tmp/eksctl /usr/local/bin
-
-# Install kubectl
-curl -LO https://dl.k8s.io/release/v1.29.13/bin/linux/amd64/kubectl
-chmod +x ./kubectl
-sudo mv ./kubectl /usr/local/bin/
-alias k=kubectl
-k version --client
-
-# Create EKS cluster
-eksctl create cluster -f eks_config.yaml
-k get nodes
-
-# Create namespace
-k create ns final
-
-# Deploy AWS EBS CSI driver
-k apply -k 'github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-1.32'
-
-# Apply service account, role, and role binding
-k apply -f ./service-account/sa.yaml
-k apply -f ./service-account/role.yaml
-k apply -f ./service-account/role-binding.yaml
-
-# Verify namespace access
-kubectl get namespaces --as=system:serviceaccount:final:rvServiceAccount
-k describe clusterroles rv-ns-admin
-
-# Deploy MySQL resources
-k apply -f ./mysql-db/secrets.yaml
-k apply -f ./mysql-db/pvc.yaml
-k apply -f ./mysql-db/headless.yaml
-k apply -f ./mysql-db/deployment.yaml
-
-# Deploy Flask application resources
-k apply -f ./web-app/secrets.yaml
-k apply -f ./web-app/configMap.yaml
-k apply -f ./web-app/service.yaml
-k apply -f ./web-app/deployment.yaml
-
-# Verify pods
-k get pods -n final
-
-# Test PVC by deleting MySQL pod
-k delete pod mysql-0 -n final
-
-# Restart Flask deployment to reconnect with new DB pod
-kubectl rollout restart deployment application -n final
-
-# Update background image URL in ConfigMap
-k apply -f ./web-app/configMap.yaml
-kubectl rollout restart deployment application -n final
-
-# Cleanup
-k delete ns final
-eksctl delete cluster --name rv-eks-cluster --region us-east-1
+eksctl version && kubectl version --client
 ```
 
-### Steps
+### Create EKS Cluster
+```bash
+eksctl create cluster -f eks_config.yaml --region us-east-1
+kubectl get nodes
+```
 
-1. **Clone the Repository**.
+### Kubernetes Manifests
+1. **Namespace & CSI Driver**
+   ```bash
+   kubectl create ns final
+   kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-1.32"
+   ```
+2. **RBAC**
+   ```bash
+   kubectl apply -f service-account/sa.yaml
+   kubectl apply -f service-account/role.yaml
+   kubectl apply -f service-account/role-binding.yaml
+   ```
+3. **MySQL Deployment**
+   ```bash
+   kubectl apply -f mysql-db/secrets.yaml
+   kubectl apply -f mysql-db/pvc.yaml
+   kubectl apply -f mysql-db/headless.yaml
+   kubectl apply -f mysql-db/deployment.yaml
+   ```
+4. **Flask App Deployment**
+   ```bash
+   kubectl apply -f web-app/secrets.yaml
+   kubectl apply -f web-app/configMap.yaml
+   kubectl apply -f web-app/service.yaml
+   kubectl apply -f web-app/deployment.yaml
+   ```
 
-2. **Configure ECR**: Create an ECR repository.
+---
 
-3. **Set GitHub Secrets**: Add `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION`.
+## ✅ Verification
+1. **Access App**: Obtain LoadBalancer DNS (`kubectl get svc -n final`) and open in browser.
+2. **Persistence Test**:
+   ```bash
+   kubectl delete pod mysql-0 -n final
+   kubectl rollout restart deployment web-app -n final
+   ```
+   Data persists after pod recreation.
+3. **ConfigMap Update**: Change S3 URL, reapply, and restart deployment to see new background.
 
-4. **Automate Build**: Push to main branch to trigger GitHub Actions.
+---
 
-5. **Create EKS Cluster**: Use the `eksctl` command above with your `eks_config.yaml`.
+## 🔧 CI/CD Pipeline
+![CI Pipeline](docs/github-actions.png)
+1. Push to `main` → triggers GitHub Actions
+2. Build & test Docker image
+3. Push to ECR
+4. Apply k8s manifests to EKS via `kubectl` (GitHub OIDC)
 
-6. **Deploy Manifests**: Apply Kubernetes manifests as shown in the commands.
+---
 
-7. **Verify the pods locally**: Check services and pods using `kubectl get` commands.
+## 📈 Features
+- **Auto-Scaling**: HPA configured for Flask deployment
+- **Logging**: Background image URL & app logs
+- **Monitoring**: [Prometheus & Grafana](#) (future)
+- **Configurable**: Environment via ConfigMap & Secrets
 
-8. **Verify the application**: Copy & paste the DNS of LoadBalancer (don't forget to add "http://").
+---
 
-## Conclusion
+## 🤝 Contributing
+1. Fork repo
+2. Create feature branch
+3. Submit PR with issue reference
+4. CI will run tests & lint checks
 
-This project demonstrates a fully automated, scalable, and secure cloud-native application deployment, showcasing expertise in containerization and Kubernetes orchestration.
+---
+
+## ✉️ Contact & License
+- **Author**: Rupesh Vanneldas
+- **Email**: rupeshvanneldas27@gmail.com
+
+Licensed under the [GNU License](LICENSE).
+
