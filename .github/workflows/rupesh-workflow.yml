@@ -2,7 +2,7 @@ name: Deploy to ECR  # Workflow name
 
 on:
   push:
-    branches: [dev]  # Change to "dev" if needed
+    branches: [main]  # Change to "dev" if needed
 
 jobs:
   build:
